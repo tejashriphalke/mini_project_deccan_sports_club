@@ -1,0 +1,2 @@
+2020-11-20 09:15:04,281 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - Processing list of batches
+2020-11-20 09:15:05,875 [http-nio-8090-exec-6] INFO  com.cybage.servlet.ManagerServlet - Editing Batch

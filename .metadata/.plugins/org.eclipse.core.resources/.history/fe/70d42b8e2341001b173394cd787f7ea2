@@ -1,0 +1,233 @@
+package com.example.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.EmailUtility;
+import com.example.dto.EnrollmentDto;
+import com.example.dto.ForgetPasswordDto;
+import com.example.dto.PasswordUpdate;
+import com.example.dto.UsersDto;
+import com.example.entity.Batches;
+import com.example.entity.Comments;
+import com.example.entity.Enrollment;
+import com.example.entity.Likes;
+import com.example.entity.Offers;
+import com.example.entity.Sports;
+import com.example.entity.Users;
+import com.example.repository.UsersRepository;
+import com.example.service.IUserService;
+
+@RestController 
+@RequestMapping("/user")
+public class UserController {	
+	@Autowired
+	IUserService userServiceImpl;
+	@Autowired
+	UsersRepository usersRepository;
+	@Autowired
+	EmailUtility emailUtility;
+	Users user;
+	String OTP;
+	//Calling  registerNewUser() method of User Service class to register user	
+	@PostMapping(value = "/register-new-user")
+	public ResponseEntity<?> registerNewUser(@RequestBody UsersDto user) {		
+		userServiceImpl.registerNewUser(user);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body("Registration Successful:/n "+"Welcome "
+						+ user.getUserName());
+	}	
+	//After Sending Account activation otp, Calling  registerNewUser() method of User Service class to register user	
+	@PostMapping("/email-verification/{userEmail}")
+	public ResponseEntity<?> emailVerification(@PathVariable String userEmail){		
+		user = userServiceImpl.findByUserEmail(userEmail);
+		if (user != null) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body("Email Already Exist");
+		} else {			
+			OTP = userServiceImpl.sendOTP(userEmail);
+			return ResponseEntity.status(HttpStatus.OK).body(OTP);
+		}
+	}	
+	//Calling forget password method with user email as input parameter
+	@GetMapping("/forget-password/{userEmail}")
+	public  ResponseEntity<?> forgetUserPassword(@PathVariable String userEmail){	
+		user = userServiceImpl.findByUserEmail(userEmail);
+		if (user != null) {
+			OTP = userServiceImpl.sendOTP(userEmail);
+			return ResponseEntity.status(HttpStatus.OK).body(OTP);
+		} else {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body("Email doesn't exist");
+		}		
+	}
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@PostMapping("/set-new-password")
+	public ResponseEntity<?> updatePassword(@RequestBody ForgetPasswordDto forgetPasswordDto) {
+		user = userServiceImpl.findByUserEmail(forgetPasswordDto.getUserEmail());
+		if(user != null && user.getUserEmail().equals(forgetPasswordDto.getUserEmail())) { 
+			userServiceImpl.setNewPassword( forgetPasswordDto);
+			return ResponseEntity
+					.status(HttpStatus.OK) .body("Password Update Succssesful");
+		} else {
+			return
+					ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Something went wrong"
+							); } }
+
+	//@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping(value = "/get-all-batches")
+	public ResponseEntity<?> getBatches(){			 	
+		List<Batches> listOfAllBatches = userServiceImpl.getAllBatches();
+		if(listOfAllBatches.isEmpty()) {
+			return  ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body("No Batches found in Database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.OK).body(listOfAllBatches); 	  
+		}
+	}	
+	//@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping(value = "/get-all-sports")
+	public ResponseEntity<?> getSports(){				
+		List<Sports> listOfAllSports =  userServiceImpl.getAllSports();
+		if(listOfAllSports.isEmpty()) {
+			return  ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body("No Sports found in Database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.OK).body(listOfAllSports); 	  
+		}
+	}
+	@GetMapping(value = "/get-all-offers")
+	public ResponseEntity<?> getOffers(){		
+		List<Offers> listOfAllOffers =  userServiceImpl.getAllOffers();
+		if(listOfAllOffers.isEmpty()) {
+			return  ResponseEntity
+					.status(HttpStatus.NO_CONTENT)
+					.body("No Offers found in Database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.OK).body(listOfAllOffers); 	  
+		}
+	}
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@PostMapping("/update-password")
+	public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdate passwordUpdate ) {
+		user = userServiceImpl.updatePassword(SecurityContextHolder.getContext().
+				getAuthentication(), passwordUpdate.getNewPassword(),
+				passwordUpdate.getOldPassword());
+		if(user != null) { 
+			return ResponseEntity
+					.status(HttpStatus.OK) .body("Password Update Succssesful");
+		} else 
+		{ return
+				ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Something went wrong"
+						); 
+		}
+	}
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping(value = "/enrollments")
+	public ResponseEntity<?> getEnrollments() {
+		List<Enrollment> listOfAllEnrollments =  userServiceImpl.getAllEnrollments();
+		if(listOfAllEnrollments.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Enrollments found in database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.OK).body(listOfAllEnrollments); 	  
+		}
+	}
+	//	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping(value = "/get-all-likes")
+	public ResponseEntity<?> getLikes() {
+		List<Likes> listOfAllLikes =  userServiceImpl.getAllLikes();
+		if(listOfAllLikes.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No likes found in database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.FOUND).body(listOfAllLikes); 	  
+		}
+	}
+	//	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping(value = "/get-all-comments")
+	public ResponseEntity<?> getComments() {
+		List<Comments> listOfAllComments =  userServiceImpl.getAllComments();
+		if(listOfAllComments.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.OK).body("No comments found in database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.FOUND).body(listOfAllComments); 	  
+		}
+	}
+
+
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@PostMapping(value = "/addcomment")
+	public Comments addComment(@RequestBody Comments comment) {
+		return userServiceImpl.addComment(comment);
+	}
+
+
+
+
+
+
+	//	@PreAuthorize("hasRole('CUSTOMER')")
+	@PutMapping(value = "/renew/{id}")
+	public ResponseEntity<?> renewEnrollment(@RequestBody Enrollment enrollment, @PathVariable int id){
+		if(userServiceImpl.renewEnrollment(id, enrollment) != null) {
+			return ResponseEntity.status(HttpStatus.OK).body("Renew request is Successful");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Couldnt complete the renew request"); 	  
+		}
+
+	}
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@PutMapping(value = "/addlike")
+	public ResponseEntity<?> addLikeToOffer(@RequestBody Likes like) {
+		if(userServiceImpl.addLikeToOffer(like)!= null) {
+			return ResponseEntity.status(HttpStatus.OK).body("Like to the offer have done successfully");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Couldnt complete the like request"); 	  
+		}
+	}
+
+	//	@PreAuthorize("hasRole('CUSTOMER')")
+	@PostMapping(value = "/enroll-customer/{userId}")
+	public ResponseEntity<?> enrollCustomer(@PathVariable int userId,@RequestBody EnrollmentDto enrollmentDto) {
+		String message= userServiceImpl.enrollCustomer(enrollmentDto, userId);
+		return ResponseEntity.status(HttpStatus.OK).body(message);
+
+	}
+
+
+	//	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping(value = "/get-all-enrollments-of-particular-user/{userId}")
+	public ResponseEntity<?> getUserEnrollments(@PathVariable int userId){
+		List<Enrollment> listOfAllUserEnrollments =  userServiceImpl.getUserEnrollments(userId);
+		if(listOfAllUserEnrollments.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No enrollments found  for a user in database");
+		}else 
+		{
+			return  ResponseEntity.status(HttpStatus.FOUND).body(listOfAllUserEnrollments); 	  
+		}
+	}
+
+
+}

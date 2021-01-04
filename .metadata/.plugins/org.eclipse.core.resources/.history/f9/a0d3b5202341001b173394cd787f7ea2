@@ -1,0 +1,287 @@
+package com.example.service;
+
+import java.sql.Date;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import javax.mail.MessagingException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.example.EmailUtility;
+
+import com.example.dto.EnrollmentDto;
+import com.example.dto.ForgetPasswordDto;
+import com.example.dto.UsersDto;
+import com.example.entity.Batches;
+import com.example.entity.Comments;
+import com.example.entity.Enrollment;
+import com.example.entity.EnrollmentStatus;
+import com.example.entity.Likes;
+import com.example.entity.Offers;
+import com.example.entity.Sports;
+import com.example.entity.Users;
+import com.example.repository.BatchesRepository;
+import com.example.repository.CommentsRepository;
+import com.example.repository.EnrollmentRepository;
+import com.example.repository.LikesRepository;
+import com.example.repository.OffersRepository;
+import com.example.repository.SportsRepository;
+import com.example.repository.UsersRepository;
+
+
+@Service
+public class UserServiceImpl implements IUserService {
+	String otp;
+	String msg;
+	String subject;	
+	@Autowired
+	EmailUtility emailUtility;
+	@Autowired
+	UsersRepository usersRepository;
+	@Autowired
+	BatchesRepository batchesRepository;
+	@Autowired
+	SportsRepository sportRepository;
+	@Autowired
+	OffersRepository offerRepository;
+	@Autowired
+	EnrollmentRepository enrollmentRepository;
+
+	@Autowired
+	CommentsRepository commentRepository;
+	@Autowired
+	LikesRepository likesRepository;
+
+	@Override
+	public Users registerNewUser(UsersDto newUser) {
+		Users user = new Users(newUser.getUserName(), newUser.getUserEmail(),/*new BCryptPasswordEncoder().encode(newUser.getUserPassword())*/newUser.getUserPassword() , newUser.getUserPhone(), newUser.getUserAddress(), "CUSTOMER", newUser.getUserBloodGroup(), true, 0);
+		return usersRepository.save(user);
+	}
+	@Override
+	public List<Batches> getAllBatches() {
+		return batchesRepository.findAll();
+	}
+
+	@Override
+	public List<Sports> getAllSports() {
+		return sportRepository.findAll();
+	}
+
+	@Override
+	public List<Offers> getAllOffers() {
+		return offerRepository.findAll();
+	}
+
+	@Override
+	public Users updatePassword(Authentication auth,
+			String newPassword, String oldPassword) { 
+		Users user = usersRepository.findByUserName(auth.getName());
+		if (user != null &&
+				user.getUserPassword().equals(oldPassword)) {
+			user.setUserPassword(newPassword); 
+			usersRepository.saveAndFlush(user);
+			return user;
+		} else { 
+			return null; 
+		}
+	}
+
+
+	@Override
+	public List<Enrollment> getAllEnrollments() {
+		return enrollmentRepository.findAll();
+
+	}
+
+	@Override
+	public String renewEnrollment(int id, Enrollment enrollment) {
+		LocalDate endDate = enrollment.getEnrollmentEndDate().toLocalDate();
+		LocalDate today = LocalDate.now();
+		if (endDate.isBefore(today)) {
+			enrollment.setEnrollmentStatus(EnrollmentStatus.RENEW);
+			enrollmentRepository.save(enrollment);
+			return "Renew request is successful";
+		} else
+			return null;
+
+	}
+
+	@Override
+	public String addLikeToOffer(Likes like) {
+		if (likesRepository.findById(like.getLikeId()) == null) {
+
+			likesRepository.save(like);
+			return "new like saved";
+		} else {
+			if (like.isLiked() == true) {
+				like.setLiked(false);
+				likesRepository.save(like);
+				//likesRepository.deleteById(like.getLikeId());
+
+			} else {
+				like.setLiked(true);
+				likesRepository.save(like);
+				//likesRepository.deleteById(like.getLikeId());
+			}
+			return "like updated";
+
+		}
+	}
+
+	@Override
+	public Comments addComment(Comments comment) {
+		return commentRepository.save(comment);
+	}
+
+	@Override
+	public List<Likes> getAllLikes() {
+		return likesRepository.findAll();
+	}
+
+	@Override
+	public List<Comments> getAllComments() {
+		return commentRepository.findAll();
+	}
+
+	public Users findByUserName(String userName) {
+		return usersRepository.findByUserName(userName);
+	}
+
+	@Override
+	public Users findByUserEmail(String userEmail) {
+		//System.out.println(usersRepository.findByUserEmail(userEmail));
+		//System.out.println("*************"+ usersRepository.findByUserEmail(userEmail));
+		return usersRepository.findByUserEmail(userEmail);
+
+	}
+
+	/*
+	 * @Override public Users findByUserPhone(String userPhone) { return
+	 * usersRepository.findByUserPhone(userPhone); }
+	 */
+	@Override
+	public String sendOTP(String email) {		
+		otp = new DecimalFormat("000000").format(new Random().nextInt(999999));
+		msg = "Hello Account Activation OTP is: " + otp;
+		subject = "Deccan Sports Club Account Activation";
+		System.out.println(email);
+		try {
+			emailUtility.sendEmail(email, msg, subject);
+		} catch (MessagingException e) {				
+			e.printStackTrace();
+		}
+		return otp;
+	}
+
+	@Override
+	public int setNewPassword(ForgetPasswordDto forgetPasswordDto) {
+		return usersRepository.updateUserByEmail(forgetPasswordDto.getNewPassword(), forgetPasswordDto.getUserEmail());
+
+	}
+
+	//enroll cunstomer here
+	public String enrollCustomer( EnrollmentDto enrollmentDto,int userId) {	
+		Users user=usersRepository.findById(userId).get();
+		Batches batch=batchesRepository.findById(enrollmentDto.getBatchId()).get();
+		Offers offer=offerRepository.findById(enrollmentDto.getOfferId()).get();
+		Sports sport =sportRepository.findById(enrollmentDto.getSportId()).get();	
+		 
+		List<Enrollment> enrollmentList =getUserEnrollments(userId);
+		boolean result1=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchStartTime()==batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchStartTime()));
+		
+		boolean result2=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchEndTime().isAfter(batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchStartTime())));
+			
+		boolean result3=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchStartTime().isBefore(batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchStartTime())));
+		
+		boolean result4=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchStartTime().isAfter(batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchStartTime())));
+		boolean result5=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchEndTime().isBefore(batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchEndTime())));
+		
+		boolean result6=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchEndTime().isAfter(batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchEndTime())));
+		boolean result7=	enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED))
+				.anyMatch(e->(e.getBatchId().getBatchStartTime().isBefore(batchesRepository.getOne(enrollmentDto.getBatchId()).getBatchEndTime())));
+	
+		boolean result8=enrollmentList.stream().filter(e -> e.getEnrollmentStatus().equals(EnrollmentStatus.APPROVED) || e.getEnrollmentStatus().equals(EnrollmentStatus.RENEW)
+				|| e.getEnrollmentStatus().equals(EnrollmentStatus.RENEWED)|| e.getEnrollmentStatus().equals(EnrollmentStatus.PENDING)|| e.getEnrollmentStatus().equals(EnrollmentStatus.REJECTED)).anyMatch(e->(e.getEnrollmentEndDate().compareTo( enrollmentDto.getEnrollmentStartDate())<0));
+				
+	
+		System.out.println("Result1 is;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; "+result1);
+		System.out.println("Result2 is;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; "+result2);
+		System.out.println("Result3 is;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; "+result3);
+		System.out.println("Result4 is;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; "+result4);
+		System.out.println("Result5 is;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; "+result5);
+		System.out.println("Result6 is;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; "+result6);
+		System.out.println("*******isbfore--isbefore*****************"+(result3&& result5));
+		System.out.println("********isbefor---isAfter***************"+(result3&& result6));
+		System.out.println("********---isAfter--isbefor***************"+(result4&& result5));
+		System.out.println("********---isAfter--isAfter***************"+(result4&& result6));
+		System.out.println("result2&& result3"+(result2&& result3));
+		
+		if(result1||(result2&& result3)||(result7&& result6)==true && result8==false){
+
+
+			return "Batch time conflict.You have enrolled for a batch in that timing";
+		}
+		else
+			if(batch.getBatchRemainingSeats()==0){
+				return "No seats available";
+			}
+			else
+			{
+				java. time. LocalDate date = java. time. LocalDate. now();			
+				java. sql. Date sqlDate = java. sql. Date. valueOf(date);			
+				Enrollment enrollment= new Enrollment(user,batch,offer,sport,					
+						enrollmentDto.getEnrollmentStartDate(),enrollmentDto.getEnrollmentEndDate(),
+						sport.getSportFees(),enrollmentDto.getEnrollmentStatus()
+						);
+				if(offer == null)
+				{
+					enrollment.setEnrollmentPayableFees(sport.getSportFees());	
+				}
+				else
+				{
+					double enrollmentPayableFees =sport.getSportFees()-((sport.getSportFees()*(double)offer.getOfferDiscount())/100);
+					enrollment.setEnrollmentPayableFees(enrollmentPayableFees);	
+				}
+						
+				enrollment.setEnrollmentEndDate(Date.valueOf(enrollmentDto.getEnrollmentStartDate().toLocalDate().plusMonths(offer.getOfferDuration())));
+				enrollment.setEnrollmentStatus(EnrollmentStatus.PENDING);
+
+				enrollmentRepository.save(enrollment);
+				return "User enrolled successfully";
+
+			}
+
+	}
+
+
+
+	//get the list of enrollments of a particular user
+	public List<Enrollment> getUserEnrollments(int userId)
+	{		
+		Users user =usersRepository.findById(userId).get();
+		return enrollmentRepository.findUserEnrollmentsByUserId(user);
+
+	}
+
+}

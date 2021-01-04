@@ -1,0 +1,44 @@
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+
+import com.example.dto.EnrollmentDto;
+import com.example.dto.ForgetPasswordDto;
+
+//import org.springframework.security.core.Authentication;
+
+import com.example.dto.UsersDto;
+import com.example.entity.Batches;
+import com.example.entity.Comments;
+import com.example.entity.Enrollment;
+import com.example.entity.Likes;
+import com.example.entity.Offers;
+import com.example.entity.Sports;
+import com.example.entity.Users;
+
+public interface IUserService {
+	public Users findByUserName(String userName);	
+	public Users findByUserEmail(String userEmail);
+	//public Users findByUserPhone(String userPhone);
+	public Users registerNewUser(UsersDto newUser);	
+	public List<Batches> getAllBatches();	
+	public List<Sports> getAllSports();
+	public List<Offers> getAllOffers();
+	public Users updatePassword(Authentication auth,String newPassword, String oldPassword);
+	public List<Enrollment> getAllEnrollments();
+	public List<Likes> getAllLikes();
+	public List<Comments> getAllComments();
+	public String renewEnrollment(int id,Enrollment enrollment);
+
+	public String sendOTP(String email);
+	public int setNewPassword(ForgetPasswordDto forgetPasswordDto);
+
+	public String addLikeToOffer(Likes like);
+	public Comments addComment(Comments comment);
+	public String enrollCustomer( EnrollmentDto enrollment,int userId);
+	public List<Enrollment> getUserEnrollments();
+  
+
+}

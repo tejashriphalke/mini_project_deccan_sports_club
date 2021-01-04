@@ -1,0 +1,43 @@
+package com.example.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.dto.EnrollmentDto;
+import com.example.dto.UsersDto;
+import com.example.entity.Users;
+
+@Repository
+public interface UsersRepository extends JpaRepository<Users, Integer> {
+	
+	public Users findByUserName(String userName);
+	public Users findByUserEmail(String userEmail);
+	public Users findByUserPhone(String userPhone);	
+	public List<Users> findByUserRole(String userRole);	
+	@Transactional
+	@Modifying
+	public void deleteByUserName(String userName);
+	@Transactional
+	@Modifying
+	@Query("UPDATE Users u SET u.userName=?1,u.userEmail=?2,u.userPassword=?3,u.userPhone=?4,u.userAddress=?5,u.userRole=?6,u.userBloodGroup=?7,u.isActive=?8,u.failedLoginCounts=?9 where u.userName=?10 ") 
+	public void updateUserByName(String userName,String userEmail,String userPassword, String userPhone,String userAddress,String MANAGER,String userBloodGroup,boolean  isActive,int failedLoginCounts,String userName1);  
+
+
+	@Transactional
+	@Modifying
+	@Query("UPDATE Users u SET u.userEmail=?1,u.userPassword=?2,u.userPhone=?3,u.userAddress=?4,u.userRole=?5,u.userBloodGroup=?6,u.isActive=?7,u.failedLoginCounts=?8 where u.userId=?9 ") 
+	public int updateUserById(String userEmail,String userPassword, String userPhone,String userAddress,String userRole,String userBloodGroup,boolean  isActive,int failedLoginCounts,int userId1);
+	public Users save(UsersDto newUser); 
+	@Transactional
+	@Modifying
+	@Query("UPDATE Users u SET u.userPassword = ?1 where u.userEmail = ?2")
+	public int updateUserByEmail(String newPassword, String userEmail);
+	public Users[] findByIsActive(boolean b);
+	public List<EnrollmentDto> userEnrollmentList(Users userId);
+
+}

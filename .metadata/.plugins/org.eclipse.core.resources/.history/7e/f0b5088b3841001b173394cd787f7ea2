@@ -1,0 +1,18 @@
+package com.example.service;
+
+import java.util.List;
+
+import com.example.dto.EnrollmentDto;
+import com.example.entity.Batches;
+import com.example.entity.Enrollment;
+
+public interface ManagerServiceI {
+	List<EnrollmentDto> getEnrollmentData();	
+	List<EnrollmentDto> getPendingEnrollmentList();
+	List<EnrollmentDto> getApprovedEnrollmentList();
+	List<EnrollmentDto> getRenewEnrollmentList();
+	Batches updateBatchSize(int batchId) throws Exception;
+	Enrollment approveEnrollment(Enrollment enrollment, int enrollmentId) throws Exception;
+	Enrollment rejectEnrollment(int enrollmentId);
+	Enrollment renewEnrollment(int enrollmentId) throws Exception;
+}

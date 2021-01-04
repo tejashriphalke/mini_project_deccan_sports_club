@@ -1,0 +1,24 @@
+package com.example.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.example.dto.EnrollmentDto;
+import com.example.entity.Enrollment;
+import com.example.entity.EnrollmentStatus;
+import com.example.entity.Users;
+
+@Repository
+public interface EnrollmentRepository  extends JpaRepository<Enrollment, Integer>{
+
+
+    @Query("Select e from Enrollment e where e.enrollmentStatus =:enrollmentStatus ")       // using @query
+    List<Enrollment> findByEnrollmentStatus( EnrollmentStatus enrollmentStatus);
+
+
+ 	
+
+}

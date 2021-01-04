@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.cybage.services.ManagerServiceI"/>
+    <fullyQualifiedTypeName name="com.cybage.services.ManagerServiceImpl"/>
+    <fullyQualifiedTypeName name="com.cybage.pojos.Batch"/>
+    <fullyQualifiedTypeName name="com.example.entity.Users"/>
+    <fullyQualifiedTypeName name="com.example.dto.EnrollmentDto"/>
+    <fullyQualifiedTypeName name="com.example.repository.UsersRepository"/>
+    <fullyQualifiedTypeName name="com.example.repository.SportsRepository"/>
+    <fullyQualifiedTypeName name="com.example.entity.Enrollment"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PathVariable"/>
+    <fullyQualifiedTypeName name="javax.persistence.ManyToOne"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="java.time.LocalDate"/>
+    <fullyQualifiedTypeName name="java.sql.Date"/>
+    <fullyQualifiedTypeName name="com.example.entity.EnrollmentStatus"/>
+    <fullyQualifiedTypeName name="com.example.ModelMapperConfig"/>
+    <fullyQualifiedTypeName name="com.example.service.IUserService"/>
+    <fullyQualifiedTypeName name="java.util.stream.Stream"/>
+    <fullyQualifiedTypeName name="org.springframework.boot.CommandLineRunner"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+    <fullyQualifiedTypeName name="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+</qualifiedTypeNameHistroy>

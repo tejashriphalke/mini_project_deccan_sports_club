@@ -1,0 +1,198 @@
+package com.example.service;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.dto.EnrollmentDto;
+import com.example.entity.Batches;
+import com.example.entity.Enrollment;
+import com.example.entity.EnrollmentStatus;
+import com.example.entity.Offers;
+import com.example.entity.Sports;
+import com.example.entity.Users;
+import com.example.repository.BatchesRepository;
+import com.example.repository.EnrollmentRepository;
+import com.example.repository.OffersRepository;
+import com.example.repository.SportsRepository;
+import com.example.repository.UsersRepository;
+@Service()
+public class ManagerServiceImpl implements ManagerServiceI {
+	@Autowired
+	EnrollmentRepository enrollmentRepository;
+	@Autowired
+	UsersRepository userRepository;
+	@Autowired
+	SportsRepository sportsRepository;
+	@Autowired
+	BatchesRepository batchesRepository;
+	@Autowired
+	OffersRepository offersRepository;
+
+	//to get enrollment details using DTO EnrollmentDTO
+	@Override
+	public List<EnrollmentDto> getEnrollmentData() {
+		List<EnrollmentDto> enrollmentDTOList =new ArrayList<>();
+		List<Enrollment> enrollmentList=enrollmentRepository.findAll();		
+		Iterator<Enrollment> iterator = enrollmentList.iterator();
+
+		while (iterator.hasNext()) {
+			//System.out.println(iterator.next());
+			Enrollment enrollment= iterator.next();
+			System.out.println("Enrollment Object is "+enrollment.toString());
+			Users user=enrollment.getUserId();
+			//System.out.println("printing user in service imple"+user.toString());
+			Batches batches =enrollment.getBatchId();
+			//System.out.println("Printing batches in managerService Imple"+batches.toString());
+			Offers offers =enrollment.getOfferId();
+			Sports sports =enrollment.getSportId();
+			enrollmentDTOList.add(new EnrollmentDto(enrollment.getEnrollmentId(),
+					user.getUserId(),user.getUserName(),user.getUserEmail(),user.getUserPassword(),user.getUserPhone(),
+					user.getUserAddress(),user.getUserBloodGroup(),
+					batches.getBatchId(),batches.getBatchName(),batches.getBatchStartTime(),
+					batches.getBatchEndTime(),batches.getBatchSize(),batches.getBatchRemainingSeats(),
+					offers.getOfferId(),offers.getOfferName(),offers.getOfferDuration(),offers.getOfferDiscount(),
+					offers.getLikesOnOffer(),
+					sports.getSportId(),sports.getSportName(),sports.getSportFees(),enrollment.getEnrollmentStartDate(),
+					enrollment.getEnrollmentEndDate(),enrollment.getEnrollmentPayableFees(),
+					enrollment.getEnrollmentStatus()));  
+			System.out.println("enrolment list"+enrollmentDTOList.toString());
+		}		
+
+		return enrollmentDTOList;
+	}
+	
+	//to get enrollment details using  EnrollmentDTO w.r.t status	
+			public List<EnrollmentDto> getEnrollmentListByStatusOfEnrollment(EnrollmentStatus enrollmentStatus) {
+				List<EnrollmentDto> enrollmentDTOList =new ArrayList<>();			
+				List<Enrollment> enrollmentList=enrollmentRepository.findByEnrollmentStatus(enrollmentStatus);		
+				Iterator<Enrollment> iterator = enrollmentList.iterator();
+				while (iterator.hasNext()) {
+					Enrollment enrollment= iterator.next();
+					System.out.println("Enrollment Object is "+enrollment.toString());
+					Users user=enrollment.getUserId();
+					Batches batches =enrollment.getBatchId();
+					Offers offers =enrollment.getOfferId();
+					Sports sports =enrollment.getSportId();
+					enrollmentDTOList.add(new EnrollmentDto(enrollment.getEnrollmentId(),
+							user.getUserId(),user.getUserName(),user.getUserEmail(),user.getUserPassword(),user.getUserPhone(),
+							user.getUserAddress(),user.getUserBloodGroup(),
+							batches.getBatchId(),batches.getBatchName(),batches.getBatchStartTime(),
+							batches.getBatchEndTime(),batches.getBatchSize(),batches.getBatchRemainingSeats(),
+							offers.getOfferId(),offers.getOfferName(),offers.getOfferDuration(),offers.getOfferDiscount(),
+							offers.getLikesOnOffer(),
+							sports.getSportId(),sports.getSportName(),sports.getSportFees(),enrollment.getEnrollmentStartDate(),
+							enrollment.getEnrollmentEndDate(),enrollment.getEnrollmentPayableFees(),
+							enrollment.getEnrollmentStatus()));  
+					System.out.println("enrolment list"+enrollmentDTOList.toString());
+				}		
+
+				return enrollmentDTOList;
+			}
+
+
+	//to get enrollment details using DTO EnrollmentDTO whose status is pending	
+	public List<EnrollmentDto> getPendingEnrollmentList() {		
+		EnrollmentStatus enrollmentStatus=EnrollmentStatus.PENDING;
+		return getEnrollmentListByStatusOfEnrollment( enrollmentStatus);
+		
+	}
+		
+	
+
+	//to get enrollment details using DTO EnrollmentDTO whose status is approved
+	public List<EnrollmentDto> getApprovedEnrollmentList() {		
+		EnrollmentStatus enrollmentStatus=EnrollmentStatus.APPROVED;		
+		return getEnrollmentListByStatusOfEnrollment( enrollmentStatus);
+	}
+	
+	
+	//to get enrollment details using DTO EnrollmentDTO whose status is to be renewed
+	public List<EnrollmentDto> getRenewEnrollmentList() {		
+		EnrollmentStatus enrollmentStatus=EnrollmentStatus.RENEW;
+		return getEnrollmentListByStatusOfEnrollment( enrollmentStatus);
+	}
+
+	//update batchsize
+	public Batches updateBatchSize(int batchId) throws Exception
+	{
+		if(batchesRepository.findById(batchId).isPresent())
+		{
+			Batches existingBatch= batchesRepository.findById(batchId).get();			
+			int remainingSeats=existingBatch.getBatchRemainingSeats();
+			if(remainingSeats==0)
+			{
+				throw new Exception("Batch is already full.Could not enroll...please try for another batch");
+			}
+			else
+			{
+				remainingSeats=remainingSeats-1;
+				existingBatch.setBatchRemainingSeats(remainingSeats);
+				Batches updatedBatch= batchesRepository.save(existingBatch);
+				return updatedBatch;
+
+			}
+		}
+		else 
+			return null;
+
+	}
+
+	//update the status of enrollment-approval
+	public Enrollment approveEnrollment(int enrollmentId)throws Exception
+	{
+		Enrollment enrollment =enrollmentRepository.findById(enrollmentId).get();
+		
+		Batches batch=enrollment.getBatchId();		
+		int batchId=batch.getBatchId();
+		updateBatchSize(batchId);
+		if(enrollment.getEnrollmentStartDate().compareTo(Date.valueOf(LocalDate.now()))<0)
+		{
+			enrollment.setEnrollmentStartDate(Date.valueOf(LocalDate.now()));
+			//enrollment.setEnrollmentEndDate(enrollment.getEnrollmentStartDate().plusMonths(batchId));
+		}
+		enrollment.setEnrollmentStatus(EnrollmentStatus.APPROVED);
+		enrollmentRepository.save(enrollment);
+		return enrollment;
+	}
+
+	//update the status of enrollment-Rejecting enrollment
+	public Enrollment rejectEnrollment(int enrollmentId)
+	{
+		Enrollment enrollment =enrollmentRepository.findById(enrollmentId).get();
+		enrollment.setEnrollmentStatus(EnrollmentStatus.REJECTED);
+		enrollmentRepository.save(enrollment);
+		return enrollment;
+
+	}
+
+
+	//renew the status of enrollment
+	public Enrollment renewEnrollment(int enrollmentId) throws Exception {
+		
+		Enrollment enrollment =enrollmentRepository.findById(enrollmentId).get();
+		Batches batch=enrollment.getBatchId();
+		int batchId=batch.getBatchId();
+		updateBatchSize(batchId);
+		enrollment.setEnrollmentStatus(EnrollmentStatus.RENEWED);
+		java. time. LocalDate date = java. time. LocalDate. now();
+		System. out. println("java.time.LocalDate = " + date);
+		java. sql. Date sqlDate = java. sql. Date. valueOf(date);
+		System. out. println("java.sql.Date = " + sqlDate);
+		enrollment.setEnrollmentStartDate(sqlDate);
+		Offers offers =enrollment.getOfferId();
+		int offersduration= offers.getOfferDuration();
+		enrollment.setEnrollmentEndDate(Date.valueOf(sqlDate.toLocalDate().plusMonths(offersduration)));
+		enrollmentRepository.save(enrollment);
+		return enrollment;
+	}
+
+
+}
+
+

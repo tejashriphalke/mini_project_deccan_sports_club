@@ -1,0 +1,66 @@
+2020-11-24 09:50:40,152 [http-nio-8090-exec-2] INFO  com.cybage.servlet.ManagerServlet - Processing list of batches
+2020-11-24 09:50:40,152 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Displaying profile of a perticular manager
+2020-11-24 09:50:59,196 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - deleting a batch if not assigned to a batch
+2020-11-24 09:50:59,416 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Processing list of batches
+2020-11-24 09:51:36,756 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 09:51:46,263 [http-nio-8090-exec-4] INFO  com.cybage.servlet.ManagerServlet - List All Plans...
+2020-11-24 09:51:51,473 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:11:36,318 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:11:39,149 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:08,578 [http-nio-8090-exec-8] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:11,702 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:12,976 [http-nio-8090-exec-5] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:13,176 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:13,865 [http-nio-8090-exec-4] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:14,599 [http-nio-8090-exec-8] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:14,804 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:15,191 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:15,399 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:15,999 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:16,488 [http-nio-8090-exec-8] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:16,718 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:33,152 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:12:34,797 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:13:02,996 [http-nio-8090-exec-6] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:13:05,421 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 15:13:09,324 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - Rejecting a member from enrollment
+2020-11-24 15:13:09,438 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:10:56,692 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:11:28,014 [http-nio-8090-exec-2] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:11:38,925 [http-nio-8090-exec-7] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:11:42,630 [http-nio-8090-exec-4] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:11:42,993 [http-nio-8090-exec-6] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:11:44,597 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:11:47,351 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:11:47,821 [http-nio-8090-exec-4] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:11:48,434 [http-nio-8090-exec-5] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:11:48,944 [http-nio-8090-exec-2] INFO  com.cybage.servlet.ManagerServlet - Displaying profile of a perticular manager
+2020-11-24 16:11:49,435 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:12:39,031 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:12:40,773 [http-nio-8090-exec-8] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:12:42,677 [http-nio-8090-exec-5] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:12:43,901 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:12:44,981 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:12:56,637 [http-nio-8090-exec-2] INFO  com.cybage.servlet.ManagerServlet - Rejecting a member from enrollment
+2020-11-24 16:12:56,730 [http-nio-8090-exec-6] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:12:59,676 [http-nio-8090-exec-7] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:13:01,762 [http-nio-8090-exec-8] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:13:25,221 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Checking batch size
+2020-11-24 16:13:25,222 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Enrolling the member into a batch
+2020-11-24 16:13:25,565 [http-nio-8090-exec-10] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:13:35,270 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Rejecting a member from enrollment
+2020-11-24 16:13:35,404 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:00,542 [http-nio-8090-exec-7] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:01,331 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:01,539 [http-nio-8090-exec-2] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:02,633 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of members
+2020-11-24 16:25:04,882 [http-nio-8090-exec-7] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:18,318 [http-nio-8090-exec-4] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:19,026 [http-nio-8090-exec-5] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:19,230 [http-nio-8090-exec-3] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:19,428 [http-nio-8090-exec-2] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:19,579 [http-nio-8090-exec-1] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:19,912 [http-nio-8090-exec-4] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:20,111 [http-nio-8090-exec-5] INFO  com.cybage.servlet.ManagerServlet - Getting list of enrolled members
+2020-11-24 16:25:22,069 [http-nio-8090-exec-9] INFO  com.cybage.servlet.ManagerServlet - List All Plans...
+2020-11-24 16:25:24,753 [http-nio-8090-exec-8] INFO  com.cybage.servlet.ManagerServlet - Selected the plan to be updated...

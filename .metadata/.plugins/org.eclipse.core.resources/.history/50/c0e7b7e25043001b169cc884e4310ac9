@@ -1,0 +1,60 @@
+package com.example;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import com.example.entity.Batches;
+import com.example.entity.Offers;
+import com.example.entity.Sports;
+import com.example.entity.Users;
+import com.example.repository.BatchesRepository;
+import com.example.repository.OffersRepository;
+import com.example.repository.SportsRepository;
+import com.example.repository.UsersRepository;
+
+@SpringBootApplication(scanBasePackages = { "com.example",
+		"com.example.repository",
+		"com.example.entity","com.example.controller","com.example.service"})
+@EnableJpaRepositories
+@Configuration
+public class DeccanSportClubSpringApplication implements CommandLineRunner {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DeccanSportClubSpringApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		Users user = new Users("Snehal","snehalshe@cyabge.com",new BCryptPasswordEncoder().encode("snehal"),"9545777517","Cybage1", "CUSTOMER", "O+", true, 0);
+		ur.save(user);
+		 user = new Users("Shubham","shubhamdes@cyabge.com",new BCryptPasswordEncoder().encode("shubham"),"9545777514","Cybage2","ADMIN","O+",true,0 );
+		 ur.save(user);
+		 user = new Users("Tejashri","tejashrip@cyabge.com",new BCryptPasswordEncoder().encode("tejashri"),"9545777511","Cybage3","MANAGER","O+",true,0 );
+		 ur.save(user);
+		 Batches batch = new Batches(1,"MORNING",LocalTime.of(06, 00, 00),LocalTime.of(10, 00, 00),50,50);
+		 br.save(batch);
+		 batch = new Batches(2,"AFTERNOON",LocalTime.of(11, 00, 00),LocalTime.of(14, 00, 00),50,50);
+		 br.save(batch);
+		 batch = new Batches(3,"EVENING",LocalTime.of(17, 00, 00),LocalTime.of(20, 00, 00),50,50);
+		 br.save(batch);
+		Sports sport = new Sports("CRICKET",5000);
+		sr.save(sport);
+		sport = new Sports("FOOTBALL",7000);
+		sr.save(sport);
+		sport = new Sports("GOLF",15000);
+		sr.save(sport);
+		Offers offer = new Offers(1,"SILVER",3,10,0);
+		or.save(offer);
+		offer = new Offers(2,"GOLD",6,15,0);
+		or.save(offer);
+		offer = new Offers(3,"PLATINUM",12,10,0);
+		or.save(offer);
+		offer = new Offers(4,"GENERLE",10,0);
+		or.save(offer);
+		Users user1 = ur.findByUserName(/* auth.getName() */"Snehal");
+		System.out.println(user1);
+	}
+
+}
